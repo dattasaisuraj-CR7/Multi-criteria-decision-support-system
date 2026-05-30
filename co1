@@ -1,0 +1,199 @@
+from dataclasses import dataclass
+from typing import Dict, List
+import heapq
+import time
+
+# ==========================================================
+# PEAS MODEL
+# ==========================================================
+
+print("========== PEAS MODEL ==========")
+
+print("Performance Measure : Accurate Recommendation")
+print("Environment         : User Decision Environment")
+print("Actuators           : Display Recommended Alternative")
+print("Sensors             : User Inputs and Criteria")
+
+print("\n")
+
+
+# ==========================================================
+# DATACLASS FOR ALTERNATIVES
+# ==========================================================
+
+@dataclass
+class Alternative:
+
+    name: str
+    cost: int
+    quality: int
+    performance: int
+    preference: int
+
+
+# ==========================================================
+# ALTERNATIVE DATA
+# ==========================================================
+
+alternatives: List[Alternative] = [
+
+    Alternative(
+        "Laptop A",
+        cost=8,
+        quality=9,
+        performance=8,
+        preference=7
+    ),
+
+    Alternative(
+        "Laptop B",
+        cost=7,
+        quality=8,
+        performance=9,
+        preference=8
+    ),
+
+    Alternative(
+        "Laptop C",
+        cost=9,
+        quality=7,
+        performance=7,
+        preference=9
+    ),
+
+    Alternative(
+        "Laptop D",
+        cost=6,
+        quality=9,
+        performance=10,
+        preference=8
+    )
+]
+
+
+# ==========================================================
+# CRITERIA WEIGHTS
+# ==========================================================
+
+weights: Dict[str, float] = {
+
+    "cost": 0.30,
+    "quality": 0.40,
+    "performance": 0.20,
+    "preference": 0.10
+}
+
+
+# ==========================================================
+# UTILITY FUNCTION
+# ==========================================================
+
+def calculate_utility(item: Alternative) -> float:
+
+    print(f"\nCalculating Utility for {item.name}")
+
+    utility_score = 0
+
+    utility_score += item.cost * weights["cost"]
+
+    print(
+        f"Cost Contribution = "
+        f"{item.cost} * {weights['cost']}"
+    )
+
+    utility_score += item.quality * weights["quality"]
+
+    print(
+        f"Quality Contribution = "
+        f"{item.quality} * {weights['quality']}"
+    )
+
+    utility_score += item.performance * weights["performance"]
+
+    print(
+        f"Performance Contribution = "
+        f"{item.performance} * {weights['performance']}"
+    )
+
+    utility_score += item.preference * weights["preference"]
+
+    print(
+        f"Preference Contribution = "
+        f"{item.preference} * {weights['preference']}"
+    )
+
+    print(f"Total Utility Score = {utility_score}")
+
+    return utility_score
+
+
+# ==========================================================
+# PRIORITY QUEUE FOR RANKING
+# ==========================================================
+
+priority_queue = []
+
+print("\n========== UTILITY CALCULATION ==========")
+
+for option in alternatives:
+
+    score = calculate_utility(option)
+
+    heapq.heappush(
+        priority_queue,
+        (-score, option.name)
+    )
+
+
+# ==========================================================
+# DISPLAY RANKING
+# ==========================================================
+
+print("\n========== RANKING ==========")
+
+rank = 1
+
+while priority_queue:
+
+    value, name = heapq.heappop(priority_queue)
+
+    print(
+        f"Rank {rank} : "
+        f"{name}  --> Utility Score = {-value}"
+    )
+
+    rank += 1
+
+
+# ==========================================================
+# TRACE LOGGING
+# ==========================================================
+
+print("\n========== TRACE LOGGING ==========")
+
+for option in alternatives:
+
+    print(f"Evaluated : {option.name}")
+
+    time.sleep(1)
+
+print("\nAll Alternatives Evaluated Successfully")
+
+
+# ==========================================================
+# TESTING MODULE
+# ==========================================================
+
+print("\n========== TESTING ==========")
+
+test_option = alternatives[0]
+
+test_score = calculate_utility(test_option)
+
+if test_score > 0:
+
+    print("TEST PASSED")
+
+else:
+
+    print("TEST FAILED")---=
